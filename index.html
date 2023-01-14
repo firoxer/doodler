@@ -34,6 +34,20 @@
         width: 4rem;
       }
 
+      #brushes {
+        display: flex;
+        justify-content: space-around;
+        position: fixed;
+
+        flex-direction: column;
+        height: 100%;
+        left: 2rem;
+      }
+
+      #brushes button {
+        background-color: purple;
+      }
+
       #colors {
         display: flex;
         justify-content: space-around;
@@ -46,6 +60,15 @@
 
       /* This is a bit wonky but it's to support prehistoric iOS Safari that doesn't support orientation */
       @media (orientation: portrait) {
+        #brushes {
+          height: auto;
+          left: auto;
+
+          top: 2rem;
+          flex-direction: row;
+          width: 100%;
+        }
+
         #colors {
           height: auto;
           right: auto;
@@ -77,6 +100,12 @@
   </head>
 
   <body>
+    <div id="brushes">
+      <button style="color: #1b1c33" onclick="selectBrush(100)" ontouchstart="selectBrush(50)"></button>
+      <button style="color: #1b1c33" onclick="selectBrush(20)" ontouchstart="selectBrush(20)"></button>
+      <button style="color: #1b1c33" onclick="selectBrush(10)" ontouchstart="selectBrush(10)"></button>
+    </div>
+
     <div id="colors">
       <button style="color: #1b1c33" onclick="selectColor()" ontouchstart="selectColor()"></button>
       <button style="color: #d32734" onclick="selectColor()" ontouchstart="selectColor()"></button>
@@ -110,12 +139,20 @@
           const fontSize = Math.min(32, Math.min(permanentCanvas.width, permanentCanvas.height) / 48) + 'px';
           document.documentElement.style.fontSize = fontSize;
 
-          workingContext.lineWidth = 20;
           workingContext.lineCap = 'round';
           workingContext.lineJoin = 'round';
         }
         window.addEventListener('resize', onResize);
         onResize();
+
+        window.selectBrush = function(size) {
+          event.preventDefault();
+
+          workingContext.lineWidth = size;
+        }
+
+        // Preselect medium brush
+        selectBrush(20);
 
         const colorsContainer = document.getElementById('colors');
         window.selectColor = function() {
