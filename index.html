@@ -26,15 +26,22 @@
       button {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-user-select: none;
+        transition: border-radius 0.25s ease;
+        background-color: var(--foreground);
         border-radius: 100%;
-        border: none;
+        border: 0.5rem solid var(--background);
         cursor: pointer;
         height: 4rem;
         user-select: none;
         width: 4rem;
       }
 
+      button.selected {
+        border-radius: 20%;
+      }
+
       #brushes {
+        align-items: center;
         display: flex;
         justify-content: space-around;
         position: fixed;
@@ -42,10 +49,6 @@
         flex-direction: column;
         height: 100%;
         left: 2rem;
-      }
-
-      #brushes button {
-        background-color: purple;
       }
 
       #colors {
@@ -83,27 +86,17 @@
         background-color: currentcolor;
       }
 
-      #colors button.selected {
-        background-color: var(--background);
-        border: 1.25rem solid currentcolor;
-      }
-
       #colors button.background {
-        border: 0.5rem solid var(--foreground);
-      }
-
-      #colors button.background.selected {
-        background-color: var(--foreground);
-        border: 1.25rem solid currentcolor;
+        border-color: var(--foreground);
       }
     </style>
   </head>
 
   <body>
     <div id="brushes">
-      <button style="color: #1b1c33" onclick="selectBrush(100)" ontouchstart="selectBrush(50)"></button>
-      <button style="color: #1b1c33" onclick="selectBrush(20)" ontouchstart="selectBrush(20)"></button>
-      <button style="color: #1b1c33" onclick="selectBrush(10)" ontouchstart="selectBrush(10)"></button>
+      <button style="width: 100px; height: 100px;" onclick="selectBrush(100)" ontouchstart="selectBrush(100)"></button>
+      <button style="width: 75px; height: 75px;" onclick="selectBrush(50)" ontouchstart="selectBrush(50)"></button>
+      <button style="width: 50px; height: 50px;" onclick="selectBrush(20)" ontouchstart="selectBrush(20)"></button>
     </div>
 
     <div id="colors">
@@ -145,14 +138,20 @@
         window.addEventListener('resize', onResize);
         onResize();
 
+        const brushesContainer = document.getElementById('brushes');
         window.selectBrush = function(size) {
           event.preventDefault();
-
+          Array.from(brushes.children).forEach(function(child) {
+            child.classList.remove('selected');
+          });
+            
           workingContext.lineWidth = size;
+
+          event.target.classList.add('selected');
         }
 
         // Preselect medium brush
-        selectBrush(20);
+        brushesContainer.children[1].click();
 
         const colorsContainer = document.getElementById('colors');
         window.selectColor = function() {
